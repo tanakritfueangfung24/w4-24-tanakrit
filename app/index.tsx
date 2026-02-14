@@ -1,69 +1,39 @@
-// นำเข้า component พื้นฐานจาก react-native สำหรับสร้าง UI
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
-
-// นำเข้า AsyncStorage สำหรับเก็บข้อมูลแบบถาวรในเครื่อง
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-// นำเข้า Hook จาก React
-import { useState, useEffect } from "react";
-
-// สร้าง Component หลักชื่อ Home และ export ออกไปใช้งาน
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from "react";
 export default function Home() {
 
-    // state สำหรับเก็บค่าที่พิมพ์ใน TextInput
     const [text, setText] = useState("")
-
-    // state สำหรับเก็บค่าผลไม้ที่บันทึกไว้แล้ว
     const [fruit, setFruit] = useState("")
 
-    // useEffect จะทำงานครั้งเดียวตอน component ถูกโหลด (componentDidMount)
     useEffect(() => {
-        loadFruit() // โหลดข้อมูลผลไม้จาก AsyncStorage
+        loadFruit()
     }, [])
 
-    // ฟังก์ชันบันทึกผลไม้ลง AsyncStorage
+    // ฟังก์ชันบันทึกข้อมูลลงเครื่อง
     async function saveFruit(){
-
-        // ถ้าเป็นค่าว่างหรือช่องว่าง ไม่ให้บันทึก
         if(text.trim() === "") return;
-
-        // บันทึกค่า text ลง AsyncStorage โดยใช้ key ชื่อ "fruit"
         await AsyncStorage.setItem("fruit", text)
-
-        // อัปเดต state fruit เพื่อแสดงผลทันที
         setFruit(text)
-
-        // ล้างค่าใน TextInput
         setText("")
     }
 
-    // ฟังก์ชันโหลดผลไม้จาก AsyncStorage
+    // ฟังก์ชันดึงข้อมูลจากเครื่องมาแสดง
     async function loadFruit(){
-
-        // ดึงข้อมูลจาก AsyncStorage ตาม key "fruit"
         const data = await AsyncStorage.getItem("fruit")
-
-        // ถ้ามีข้อมูล ให้เซ็ตค่าเข้า state fruit
         if(data){
             setFruit(data)
         }
     }
 
-    // ฟังก์ชันลบข้อมูลผลไม้ออกจาก AsyncStorage
+    // ฟังก์ชันลบข้อมูลออกจากเครื่อง
     async function removeFruit() {
-
-        // ลบข้อมูลที่ key "fruit"
         await AsyncStorage.removeItem("fruit")
-
-        // ล้างค่าใน state fruit
         setFruit("")
     }
     
-    // ส่วนแสดงผล UI
     return(
-        // SafeAreaView ป้องกันเนื้อหาชนขอบจอ (เช่น notch)
         <SafeAreaView style={myStyles.container}>
-
             {/* กล่องหลักแบบการ์ด */}
             <View style={myStyles.card}>
 
@@ -117,7 +87,7 @@ export default function Home() {
 
 // สร้าง object สำหรับเก็บ style ทั้งหมดของแอป
 // เปรียบเหมือน CSS ใน React Native
-const myStyles = StyleSheet.create({
+const myStyles = StyleSheet.create({    
 
     // ===== style หลักของหน้าจอ =====
     container: {
